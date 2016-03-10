@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="journal" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ba2246b0-35e4-4f8f-b695-e1fcb27e8490">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ConecionDB"/>
+	<parameter name="fecha_inicio" class="java.lang.String"/>
+	<parameter name="fecha_fin" class="java.lang.String"/>
+	<parameter name="sucursal" class="java.lang.String"/>
+	<parameter name="empresa" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT accounting_journal.trans_date,
+accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_company.name as empresa,
+ accounting_journal_detail.debit,accounting_journal_detail.credit
+ FROM 
+ accounting_journal 
+ INNER JOIN accounting_journal_detail ON 
+ accounting_journal.id_journal = accounting_journal_detail.id_journal 
+ INNER JOIN accounting_chart ON 
+ accounting_chart.id_chart = accounting_journal_detail.id_chart
+ INNER JOIN app_branch ON accounting_journal.id_branch = app_branch.id_branch
+  INNER JOIN app_company ON accounting_journal.id_company = app_company.id_company
+ WHERE accounting_journal.id_branch like $P{sucursal}  and accounting_journal.id_company like $P{empresa} and accounting_journal.trans_date > $P{fecha_inicio} and accounting_journal.trans_date < $P{fecha_fin}]]>
+	</queryString>
+	<field name="trans_date" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="code" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="debit" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="credit" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sucursal" class="java.lang.String"/>
+	<field name="empresa" class="java.lang.String"/>
+	<variable name="debito1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{debit}]]></variableExpression>
+	</variable>
+	<variable name="credito1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{credit}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{trans_date}]]></groupExpression>
+		<groupHeader>
+			<band height="27">
+				<textField isStretchWithOverflow="true">
+					<reportElement x="0" y="3" width="100" height="20" uuid="6532a953-a28b-478f-ab51-a008a08196d2"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{trans_date}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="28">
+				<textField>
+					<reportElement x="385" y="0" width="85" height="20" uuid="11fa0197-a170-40e8-8fc8-e399552907f6"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{debito1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="280" y="0" width="100" height="20" uuid="0f5a7aa4-98ee-430d-bb40-112ee1ca6273"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[Suma:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="470" y="0" width="80" height="20" uuid="04039bae-140b-48e0-bc49-3a900bb9cf3a"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{credito1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="100">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="120" backcolor="#FFFFFF" uuid="014abac5-4f99-4b9a-819b-a4fb11dce0cf"/>
+				<staticText>
+					<reportElement x="20" y="10" width="234" height="43" forecolor="#080707" uuid="24424f9e-8716-4b2f-b617-c08742791c13"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Libro Diario]]></text>
+				</staticText>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="419" y="40" width="156" height="13" uuid="66cc1ba7-8d81-41e2-8980-e48ba01a2b0b"/>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="60" width="60" height="20" uuid="48f73a4c-895e-49b1-adac-5867278841b6"/>
+					<textElement verticalAlignment="Middle">
+						<font size="14"/>
+					</textElement>
+					<text><![CDATA[Empresa:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="60" width="49" height="20" uuid="e1f6215a-9792-4d33-b28f-3d17c37ceffe"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Desde:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="465" y="60" width="49" height="20" uuid="80d971ab-bb7a-481c-af25-91ed61c43895">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Hasta:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="390" y="60" width="75" height="20" uuid="0522b614-a178-48f5-9c48-49e8c9cb1e84">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="514" y="60" width="75" height="20" uuid="733c8d64-8711-479f-b542-6bd80116dd9f">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="80" y="90" width="100" height="20" uuid="57a6e143-a222-4d51-a54b-326df257e9f2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sucursal}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="90" width="60" height="20" uuid="94158386-cc9d-47ea-8659-65309903f9a9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="14"/>
+					</textElement>
+					<text><![CDATA[Sucursal:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="80" y="60" width="100" height="20" uuid="ce92eea8-339b-49f5-ab0b-529e307c83ec"/>
+					<textElement verticalAlignment="Middle">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{empresa}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="96ff319c-2093-423b-b4aa-22155fabed1a"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="100" y="0" width="110" height="20" forecolor="#000508" backcolor="#E6E6E6" uuid="f54bbe25-e85d-4df1-aea6-e2e27bb9338d"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+					<paragraph firstLineIndent="2" spacingBefore="0"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="210" y="0" width="175" height="20" forecolor="#000305" backcolor="#E6E6E6" uuid="1f71e938-5a70-4875-a4f7-8c58edd75bc4"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+					<paragraph firstLineIndent="2"/>
+				</textElement>
+				<text><![CDATA[Cuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="385" y="0" width="85" height="20" forecolor="#030D12" backcolor="#E6E6E6" uuid="6d606fa2-63d4-44ec-9cd1-e74db770d294">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+					<paragraph firstLineIndent="2"/>
+				</textElement>
+				<text><![CDATA[Débito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="470" y="0" width="85" height="20" forecolor="#03080A" backcolor="#E6E6E6" uuid="b009a7fc-9049-426b-9e5f-c5cc57202a67"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+					<paragraph firstLineIndent="2"/>
+				</textElement>
+				<text><![CDATA[Crédito]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="face62ce-b8fe-4ca3-b04a-854376ee282a"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="100" y="0" width="110" height="20" uuid="efc65680-a9b4-4318-a26a-8966b752b802"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+					<paragraph spacingBefore="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="210" y="0" width="170" height="20" uuid="acec41a4-27b5-499f-a033-0ef6e886269d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="385" y="0" width="85" height="20" uuid="99d791ac-e416-4de0-8cb7-f99283ccfdbc"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{debit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="470" y="0" width="85" height="20" uuid="82ca32e4-01be-4898-8ce5-c69708f446bf"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{credit}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="fd10e3b2-74f6-470b-b2ae-c8aded795642"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="6c65ef82-861f-420f-8777-039dd2e207d1"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
