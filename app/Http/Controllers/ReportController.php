@@ -189,7 +189,11 @@ class ReportController extends Controller
             readfile($output.'.'.$ext);
             unlink($output.'.'.$ext); // deletes the temporary file
         }
+      }
+      public function discover_fields($query){
+        $discovery = new discovery();
+        $table_columns = $discovery->discover_fields($query);
+        return view ('discovery.fields',compact('table_columns'));
+      }
 
-
-    }
 }
