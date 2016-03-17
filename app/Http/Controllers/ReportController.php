@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 
-
 use App\Http\Requests;
 use Illuminate\Support\Facades\Session;
 use JasperPHP\JasperPHP;
 use App\Http\Controllers\Controller;
 use DB;
+use App\discovery;
+use View;
+use Input;
 
 
 class ReportController extends Controller
@@ -190,10 +192,22 @@ class ReportController extends Controller
             unlink($output.'.'.$ext); // deletes the temporary file
         }
       }
-      public function discover_fields($query){
+      public function discover_fields(){
+        $query = "select * from sales_invoice s inner join sales_invoice_detail as sid on s.id_sales_invoice = sid.id_sales_invoice";
         $discovery = new discovery();
         $table_columns = $discovery->discover_fields($query);
-        return view ('discovery.fields',compact('table_columns'));
+        return View::make('discovery.fields',compact('table_columns'));
       }
-
+      public function get_discovery_data(){
+        $table = Input::get('table');
+        $column = Input::get('column');
+        $data_array = array();
+        $entry_array = array();
+        $data = DB::select(DB::raw("SELECT ". $column ." from " . $table . ";"));
+        foreach($data as $entry){
+          $entry_array = json_decode(json_encode($entry), True);
+          $data_array[] = $entry_array[$column];
+        }
+        return $data_array;
+      }
 }
