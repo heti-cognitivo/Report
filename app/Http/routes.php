@@ -20,5 +20,6 @@ Route::get('/libro_iva_compras', ['uses' =>'ReportController@libro_iva_compras']
 Route::get('/libro_iva_ventas', ['uses' =>'ReportController@libro_iva_ventas']);
 Route::get('/plan_cuenta', ['uses' =>'ReportController@plan_cuenta']);
 Route::get('/getfilterdata','ReportController@get_discovery_data');
+Route::get('/showreport','ReportController@show');
 Route::get('/discoverfields','ReportController@discover_fields');
 Route::get('/testdiscovery',function(){return View::make('discovery.testdiscovery');});

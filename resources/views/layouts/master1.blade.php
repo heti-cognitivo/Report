@@ -431,12 +431,12 @@ License: You must have a valid license purchased only from themeforest(the above
                 <ul class="nav navbar-nav">
 
 
-                    <li class="menu-dropdown classic-menu-dropdown ">
-                        <a href="javascript:;"> Reportes
+                    {{-- <li class="menu-dropdown classic-menu-dropdown "> --}}
+                        {{-- <a href="javascript:;"> Reportes
                             <span class="arrow"></span>
-                        </a>
-                        <ul class="dropdown-menu pull-left">
-                            <li class=" ">
+                        </a> --}}
+                        {{-- <ul class="dropdown-menu pull-left"> --}}
+                            {{-- <li class=" ">
                                 <a href="{{url()}}/libro_diario" class="nav-link  "> Libro Diario</a>
                             </li>
                             <li class=" ">
@@ -450,10 +450,10 @@ License: You must have a valid license purchased only from themeforest(the above
                             </li>
                             <li class=" ">
                                 <a href="{{url()}}/plan_cuenta" class="nav-link  "> Plan de Cuenta</a>
-                            </li>
-                            
-                        </ul>
-                    </li>
+                            </li> --}}
+
+                        {{-- </ul> --}}
+                    {{-- </li> --}}
 
 
                 </ul>
@@ -520,7 +520,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 <!-- BEGIN PAGE CONTENT INNER -->
                 <div class="page-content-inner">
 
-
+@yield('page-content-inner')
 
                 </div>
                 <!-- END PAGE CONTENT INNER -->
