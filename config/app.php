@@ -137,6 +137,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 		 Collective\Html\HtmlServiceProvider::class,
+     Nathanmac\Utilities\Parser\ParserServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -145,9 +146,9 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-		JasperPHP\JasperPHPServiceProvider::class,
-		
-		
+		    JasperPHP\JasperPHPServiceProvider::class,
+
+
         //'DaveJamesMiller\Breadcrumbs\ServiceProvider',
 
     ],
@@ -200,7 +201,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 		'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Parser' => Nathanmac\Utilities\Parser\Facades\Parser::class,
 
     ],
-
 ];
