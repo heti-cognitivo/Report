@@ -26,7 +26,7 @@ class ReportController extends Controller
     {
        $empresas= DB::table('app_company')->get();
        $sucursales= DB::table('app_branch')->get();
-       $iterator = new \RecursiveDirectoryIterator(\Config::get('app.reports_path'));
+       $iterator = new \RecursiveDirectoryIterator(base_path() . '/app/Reports/');
        $filter = new \RegexIterator($iterator->getChildren(), '/.(xml|jasper)$/');
        $filelist = array();
        foreach($filter as $entry) {
