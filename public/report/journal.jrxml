@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-03-25T15:05:52 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="journal" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ba2246b0-35e4-4f8f-b695-e1fcb27e8490">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ConecionDB"/>
 	<parameter name="fecha_inicio" class="java.lang.String"/>
 	<parameter name="fecha_fin" class="java.lang.String"/>
 	<parameter name="sucursal" class="java.lang.String"/>
@@ -46,11 +46,11 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{trans_date}]]></groupExpression>
 		<groupHeader>
-			<band height="27">
+			<band height="18">
 				<textField isStretchWithOverflow="true">
-					<reportElement x="0" y="3" width="100" height="20" uuid="6532a953-a28b-478f-ab51-a008a08196d2"/>
+					<reportElement x="0" y="2" width="180" height="14" uuid="6532a953-a28b-478f-ab51-a008a08196d2"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10"/>
+						<font size="11" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{trans_date}]]></textFieldExpression>
 				</textField>
@@ -60,17 +60,23 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 			<band height="28">
 				<textField>
 					<reportElement x="385" y="0" width="85" height="20" uuid="11fa0197-a170-40e8-8fc8-e399552907f6"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$V{debito1}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement x="280" y="0" width="100" height="20" uuid="0f5a7aa4-98ee-430d-bb40-112ee1ca6273"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<text><![CDATA[Suma:]]></text>
+					<reportElement x="280" y="0" width="105" height="20" uuid="0f5a7aa4-98ee-430d-bb40-112ee1ca6273"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="470" y="0" width="80" height="20" uuid="04039bae-140b-48e0-bc49-3a900bb9cf3a"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<reportElement x="470" y="0" width="85" height="20" uuid="04039bae-140b-48e0-bc49-3a900bb9cf3a"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$V{credito1}]]></textFieldExpression>
 				</textField>
 			</band>
@@ -80,44 +86,63 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 		<band/>
 	</background>
 	<title>
-		<band height="100">
+		<band height="68">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="120" backcolor="#FFFFFF" uuid="014abac5-4f99-4b9a-819b-a4fb11dce0cf"/>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="10" backcolor="#FFFFFF" uuid="014abac5-4f99-4b9a-819b-a4fb11dce0cf"/>
 				<staticText>
-					<reportElement x="20" y="10" width="234" height="43" forecolor="#080707" uuid="24424f9e-8716-4b2f-b617-c08742791c13"/>
-					<textElement>
-						<font size="34" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Libro Diario]]></text>
-				</staticText>
-				<textField pattern="EEEEE dd MMMMM yyyy">
-					<reportElement x="419" y="40" width="156" height="13" uuid="66cc1ba7-8d81-41e2-8980-e48ba01a2b0b"/>
-					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="20" y="60" width="60" height="20" uuid="48f73a4c-895e-49b1-adac-5867278841b6"/>
+					<reportElement x="20" y="53" width="55" height="17" uuid="f607a1da-a974-493d-ae92-9f12c26052b3"/>
 					<textElement verticalAlignment="Middle">
-						<font size="14"/>
+						<font size="11"/>
 					</textElement>
 					<text><![CDATA[Empresa:]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="75" y="70" width="100" height="17" uuid="58a342c8-902f-4e76-9fdf-ebcb2c02d8ef"/>
+					<textElement verticalAlignment="Middle">
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sucursal}]]></textFieldExpression>
+				</textField>
 				<staticText>
-					<reportElement x="340" y="60" width="49" height="20" uuid="e1f6215a-9792-4d33-b28f-3d17c37ceffe"/>
-					<textElement verticalAlignment="Middle"/>
+					<reportElement x="20" y="70" width="55" height="17" uuid="fcc62b0b-1e87-4e34-b8c3-faec6b50c0f4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Sucursal:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="75" y="53" width="100" height="17" uuid="44171a3a-c36a-4c2b-b2aa-c4a3b854d940"/>
+					<textElement verticalAlignment="Middle">
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{empresa}]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="418" y="53" width="156" height="13" uuid="2778ee1f-fc53-41a5-bedf-8aaa059090ba"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="326" y="66" width="49" height="16" uuid="4a51de27-4e9a-49ee-93d5-8cc88b8a73c2"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true" isItalic="false"/>
+					</textElement>
 					<text><![CDATA[Desde:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="465" y="60" width="49" height="20" uuid="80d971ab-bb7a-481c-af25-91ed61c43895">
+					<reportElement x="450" y="66" width="49" height="16" uuid="ad4855a8-4490-42c1-a964-d1c9d3b03f40">
 						<property name="local_mesure_unitwidth" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
-					<textElement verticalAlignment="Middle"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
 					<text><![CDATA[Hasta:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="390" y="60" width="75" height="20" uuid="0522b614-a178-48f5-9c48-49e8c9cb1e84">
+					<reportElement x="375" y="66" width="75" height="16" uuid="5b1bea50-2515-4dad-8c19-127c49c1bb4c">
 						<property name="local_mesure_unitwidth" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -125,47 +150,30 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 					<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="514" y="60" width="75" height="20" uuid="733c8d64-8711-479f-b542-6bd80116dd9f">
+					<reportElement x="499" y="66" width="75" height="16" uuid="63c356bd-2a9d-4f84-b164-adb3b087115e">
 						<property name="local_mesure_unitwidth" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement x="80" y="90" width="100" height="20" uuid="57a6e143-a222-4d51-a54b-326df257e9f2"/>
-					<textElement verticalAlignment="Middle">
-						<font size="14"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{sucursal}]]></textFieldExpression>
-				</textField>
 				<staticText>
-					<reportElement x="20" y="90" width="60" height="20" uuid="94158386-cc9d-47ea-8659-65309903f9a9"/>
-					<textElement verticalAlignment="Middle">
-						<font size="14"/>
+					<reportElement x="20" y="10" width="555" height="43" forecolor="#080707" uuid="597c2e8a-7f04-471e-af27-d1dd3726a7c2"/>
+					<textElement textAlignment="Center">
+						<font fontName="SansSerif" size="34" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Sucursal:]]></text>
+					<text><![CDATA[DIARIO]]></text>
 				</staticText>
-				<textField>
-					<reportElement x="80" y="60" width="100" height="20" uuid="ce92eea8-339b-49f5-ab0b-529e307c83ec"/>
-					<textElement verticalAlignment="Middle">
-						<font size="14"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{empresa}]]></textFieldExpression>
-				</textField>
 			</frame>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="13"/>
+		<band height="6"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="21">
-			<line>
-				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="96ff319c-2093-423b-b4aa-22155fabed1a"/>
-			</line>
+		<band height="19">
 			<staticText>
-				<reportElement mode="Opaque" x="100" y="0" width="110" height="20" forecolor="#000508" backcolor="#E6E6E6" uuid="f54bbe25-e85d-4df1-aea6-e2e27bb9338d"/>
+				<reportElement mode="Transparent" x="0" y="0" width="90" height="18" forecolor="#000508" backcolor="#E6E6E6" uuid="f54bbe25-e85d-4df1-aea6-e2e27bb9338d"/>
 				<textElement textAlignment="Left">
 					<font size="14" isBold="true"/>
 					<paragraph firstLineIndent="2" spacingBefore="0"/>
@@ -173,7 +181,7 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="210" y="0" width="175" height="20" forecolor="#000305" backcolor="#E6E6E6" uuid="1f71e938-5a70-4875-a4f7-8c58edd75bc4"/>
+				<reportElement mode="Transparent" x="90" y="0" width="295" height="18" forecolor="#000305" backcolor="#E6E6E6" uuid="1f71e938-5a70-4875-a4f7-8c58edd75bc4"/>
 				<textElement textAlignment="Left">
 					<font size="14" isBold="true"/>
 					<paragraph firstLineIndent="2"/>
@@ -181,7 +189,7 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 				<text><![CDATA[Cuenta]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="385" y="0" width="85" height="20" forecolor="#030D12" backcolor="#E6E6E6" uuid="6d606fa2-63d4-44ec-9cd1-e74db770d294">
+				<reportElement mode="Transparent" x="385" y="0" width="85" height="18" forecolor="#030D12" backcolor="#E6E6E6" uuid="6d606fa2-63d4-44ec-9cd1-e74db770d294">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -192,7 +200,7 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 				<text><![CDATA[Débito]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="470" y="0" width="85" height="20" forecolor="#03080A" backcolor="#E6E6E6" uuid="b009a7fc-9049-426b-9e5f-c5cc57202a67"/>
+				<reportElement mode="Transparent" x="470" y="0" width="85" height="18" forecolor="#03080A" backcolor="#E6E6E6" uuid="b009a7fc-9049-426b-9e5f-c5cc57202a67"/>
 				<textElement textAlignment="Left">
 					<font size="14" isBold="true"/>
 					<paragraph firstLineIndent="2"/>
@@ -202,12 +210,9 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20">
-			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1" uuid="face62ce-b8fe-4ca3-b04a-854376ee282a"/>
-			</line>
+		<band height="14">
 			<textField isStretchWithOverflow="true">
-				<reportElement x="100" y="0" width="110" height="20" uuid="efc65680-a9b4-4318-a26a-8966b752b802"/>
+				<reportElement x="0" y="0" width="89" height="14" uuid="efc65680-a9b4-4318-a26a-8966b752b802"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 					<paragraph spacingBefore="0"/>
@@ -215,22 +220,24 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="210" y="0" width="170" height="20" uuid="acec41a4-27b5-499f-a033-0ef6e886269d"/>
+				<reportElement x="89" y="0" width="296" height="14" uuid="acec41a4-27b5-499f-a033-0ef6e886269d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="385" y="0" width="85" height="20" uuid="99d791ac-e416-4de0-8cb7-f99283ccfdbc"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<reportElement x="384" y="0" width="86" height="14" uuid="99d791ac-e416-4de0-8cb7-f99283ccfdbc">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{debit}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="470" y="0" width="85" height="20" uuid="82ca32e4-01be-4898-8ce5-c69708f446bf"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<reportElement x="470" y="0" width="85" height="14" uuid="82ca32e4-01be-4898-8ce5-c69708f446bf"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{credit}]]></textFieldExpression>
@@ -243,9 +250,9 @@ accounting_chart.code,accounting_chart.name, app_branch.name as sucursal, app_co
 	<pageFooter>
 		<band height="17">
 			<textField>
-				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="fd10e3b2-74f6-470b-b2ae-c8aded795642"/>
+				<reportElement mode="Transparent" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="fd10e3b2-74f6-470b-b2ae-c8aded795642"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="6c65ef82-861f-420f-8777-039dd2e207d1"/>
