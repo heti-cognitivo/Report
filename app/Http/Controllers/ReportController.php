@@ -90,9 +90,6 @@ class ReportController extends Controller
             readfile($output.'.'.$ext);
             unlink($output.'.'.$ext); // deletes the temporary file
         }
-
-
-
     }
 
     public function libro_mayor()
@@ -124,9 +121,6 @@ class ReportController extends Controller
             readfile($output.'.'.$ext);
             unlink($output.'.'.$ext); // deletes the temporary file
         }
-
-
-
     }
 
     public function plan_cuenta()
@@ -157,10 +151,6 @@ class ReportController extends Controller
             flush();
             readfile($output.'.'.$ext);
             unlink($output.'.'.$ext); // deletes the temporary file
-
-
-
-
     }
 
     public function libro_iva_compras()

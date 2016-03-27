@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-03-27T19:31:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PlanCuenta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="19b62428-ba67-4c47-aa9f-81fc3a9152a2">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ConecionDB"/>
 	<queryString>
@@ -15,9 +16,9 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="43" splitType="Stretch">
 			<frame>
-				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#FFFFFF" uuid="7b93f85b-eb15-43d1-9a2c-ea9e813134ce"/>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="60" backcolor="#FFFFFF" uuid="7b93f85b-eb15-43d1-9a2c-ea9e813134ce"/>
 				<staticText>
 					<reportElement x="20" y="10" width="350" height="43" forecolor="#080707" uuid="70bbc070-e28e-4ca1-8392-e9ac7a13322d"/>
 					<textElement>
@@ -53,12 +54,12 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>
