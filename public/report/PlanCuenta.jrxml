@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-03-27T19:31:15 -->
+<!-- 2016-03-27T20:30:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PlanCuenta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="19b62428-ba67-4c47-aa9f-81fc3a9152a2">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ConecionDB"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value="YWNjb3VudGluZ19jaGFydCAsMTUsMTUsMzI0NzU1YzctZTE3Ny00MjA4LTgxNDgtZDVkZjJkMGUw&#xA;YWU1Ow=="/>
 	<queryString>
-		<![CDATA[SELECT code, name FROM elcamino.accounting_chart;]]>
+		<![CDATA[SELECT code,
+	name
+FROM accounting_chart]]>
 	</queryString>
 	<field name="code" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -42,13 +45,13 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="100" height="20" uuid="350df995-6e11-4996-8557-38a1eb83f6ee"/>
+				<reportElement x="0" y="0" width="100" height="13" uuid="350df995-6e11-4996-8557-38a1eb83f6ee"/>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="0" width="280" height="20" uuid="00af3924-3e6a-41be-bbdf-80c7cf93a8d3"/>
+				<reportElement x="108" y="0" width="380" height="13" uuid="00af3924-3e6a-41be-bbdf-80c7cf93a8d3"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 		</band>
