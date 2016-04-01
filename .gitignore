@@ -3,3 +3,6 @@
 Homestead.yaml
 Homestead.json
 .env
+composer-setup.php
+composer.lock
+composer.phar

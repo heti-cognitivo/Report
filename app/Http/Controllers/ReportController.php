@@ -26,7 +26,7 @@ class ReportController extends Controller
     {
        $empresas= DB::table('app_company')->get();
        $sucursales= DB::table('app_branch')->get();
-       $iterator = new \RecursiveDirectoryIterator(\Config::get('app.reports_path'));
+       $iterator = new \RecursiveDirectoryIterator(base_path() . '/app/Reports/');
        $filter = new \RegexIterator($iterator->getChildren(), '/.(xml|jasper)$/');
        $filelist = array();
        foreach($filter as $entry) {
@@ -35,7 +35,6 @@ class ReportController extends Controller
         return view('dashboard',compact('empresas','sucursales','filelist'));
     }
     public function show(){
-      //$file = \Config::get('app.reports_path') . "/" . Input::get('file') . ".jasper";
       $file = base_path() . '/app/Reports/' . Input::get('file') . ".jasper";
       if(Session::has('empresa')){
         $jasperPHP = new JasperPHP;
@@ -90,9 +89,6 @@ class ReportController extends Controller
             readfile($output.'.'.$ext);
             unlink($output.'.'.$ext); // deletes the temporary file
         }
-
-
-
     }
 
     public function libro_mayor()
@@ -124,9 +120,6 @@ class ReportController extends Controller
             readfile($output.'.'.$ext);
             unlink($output.'.'.$ext); // deletes the temporary file
         }
-
-
-
     }
 
     public function plan_cuenta()
@@ -157,10 +150,6 @@ class ReportController extends Controller
             flush();
             readfile($output.'.'.$ext);
             unlink($output.'.'.$ext); // deletes the temporary file
-
-
-
-
     }
 
     public function libro_iva_compras()
