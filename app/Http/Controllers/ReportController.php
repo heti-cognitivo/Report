@@ -35,7 +35,6 @@ class ReportController extends Controller
         return view('dashboard',compact('empresas','sucursales','filelist'));
     }
     public function show(){
-      //$file = \Config::get('app.reports_path') . "/" . Input::get('file') . ".jasper";
       $file = base_path() . '/app/Reports/' . Input::get('file') . ".jasper";
       if(Session::has('empresa')){
         $jasperPHP = new JasperPHP;
