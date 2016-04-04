@@ -10,8 +10,7 @@
         "davejamesmiller/laravel-breadcrumbs": "^3.0",
 		 "laravelcollective/html": "5.1.*",
         "cossou/jasperphp": "~2.1",
-        "greenlion/php-sql-parser":"dev-master",
-        "Nathanmac/Parser": "3.*"
+        "greenlion/php-sql-parser":"dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
