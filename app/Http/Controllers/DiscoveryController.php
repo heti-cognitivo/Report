@@ -35,8 +35,9 @@ class DiscoveryController extends Controller
       $datetime = array('java.sql.Date', 'java.sql.Timestamp');
       $file = Input::get('file');
       $jasperPHP = new JasperPHP;
-      $parametros=array();
+      $parameter_explode=array();
       $query = "";
+      $parameter_details = array();
       $output = $jasperPHP->list_parameters(
       base_path() . '/app/Reports/' . Input::get('file') . ".jasper"
       )->execute();
@@ -45,18 +46,25 @@ class DiscoveryController extends Controller
                                   'SimpleXMLElement', LIBXML_NOCDATA);
         $array = json_decode(json_encode($xml), TRUE);
         $query = $array["queryString"];
-        if(strpos($query, '|7|') !== FALSE AND strpos($mystring, '|11|') !== FALSE)
-        {
-            // Found them
+        foreach ($output as $parameter_description) {
+          $parameter_explode = preg_split('/\s+/',$parameter_description);
+          $parameter_details[$parameter_explode[1]]["type"] = $parameter_explode[2];
+          $parameter_jasper = '\$P{' . $parameter_explode[1] . '}';
+          $query_split = preg_split('/' . $parameter_jasper . '/',$query);
+          if(count($query_split)>1){
+            $table_col_name=explode(' ',$query_split[0]);
+            $pos = count($table_col_name)-3;
+            $parameter_details[$parameter_explode[1]]["tablecol"] = $table_col_name[$pos];
+          }
+          unset($parameter_explode);
+          $parameter_explode = array();
         }
-        if()
+
+        var_dump($parameter_details);
+
       }
 
-       $cont=0;
-      foreach ($output as $parameter_description) {
-      $parametros[$cont]= $parameter_description;
-      $cont++;
-      }
+
       // $vista= view('reportes.filtros')->with('parametros',$parametros)->render();
       // return Response()->json(['html'=>$vista]);
     }
