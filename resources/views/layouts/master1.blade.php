@@ -45,7 +45,9 @@ License: You must have a valid license purchased only from themeforest(the above
         <link href="{{url()}}/assets/layouts/layout3/css/themes/default.min.css" rel="stylesheet" type="text/css" id="style_color" />
         <link href="{{url()}}/assets/layouts/layout3/css/custom.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="{{url()}}/favicon.ico" /> </head>
+    <link rel="shortcut icon" href="{{url()}}/favicon.ico" />
+        @yield('resources')
+  </head>
 <!-- END HEAD -->
 
 <body class="page-container-bg-solid page-boxed">

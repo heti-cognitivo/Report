@@ -4,7 +4,7 @@ use DB;
 use PHPSQLParser\PHPSQLParser;
 class discovery
 {
-  public function discover_fields($query){
+  public function discover_fields_sql($query){
     $text = array('char', 'varchar', 'binary', 'varbinary', 'blob', 'text', 'enum','longtext');
     $numeric = array('int', 'smallint', 'decimal', 'numeric','float', 'real', 'double precision');
     $datetime = array('date', 'time', 'datetime', 'timestamp', 'year');
@@ -35,6 +35,9 @@ class discovery
       $table_columns[$table['table']] = $columns;
     }
     return $table_columns;
+  }
+  public function discover_fields_jasper(){
+    
   }
 }
 ?>
