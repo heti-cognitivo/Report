@@ -31,13 +31,14 @@ class DiscoveryController extends Controller
       return $data_array;
     }
     public function discover_fields_jasper(){
-      $text = array('java.lang.String', 'java.lang.Byte[]');
-      $datetime = array('java.sql.Date', 'java.sql.Timestamp');
+      $text = array('JAVA.LANG.STRING', 'JAVA.LANG.BYTE[]');
+      $datetime = array('JAVA.SQL.DATE', 'JAVA.SQL.TIMESTAMP');
       $file = Input::get('file');
       $jasperPHP = new JasperPHP;
       $parameter_explode=array();
       $query = "";
       $parameter_details = array();
+      $type = "";
       $output = $jasperPHP->list_parameters(
       base_path() . '/app/Reports/' . Input::get('file') . ".jasper"
       )->execute();
@@ -48,7 +49,16 @@ class DiscoveryController extends Controller
         $query = $array["queryString"];
         foreach ($output as $parameter_description) {
           $parameter_explode = preg_split('/\s+/',$parameter_description);
-          $parameter_details[$parameter_explode[1]]["type"] = $parameter_explode[2];
+          if(in_array(strtoupper($parameter_explode[2]),$text)){
+            $type = "TEXT";
+          }
+          elseif (in_array(strtoupper($parameter_explode[2]),$datetime)) {
+            $type = "DATETIME";
+          }
+          else {
+            $type = "NUMBER";
+          }
+          $parameter_details[$parameter_explode[1]]["type"] = $type;
           $parameter_jasper = '\$P{' . $parameter_explode[1] . '}';
           $query_split = preg_split('/' . $parameter_jasper . '/',$query);
           if(count($query_split)>1){
@@ -58,14 +68,9 @@ class DiscoveryController extends Controller
           }
           unset($parameter_explode);
           $parameter_explode = array();
+          $type = "";
         }
-
-        var_dump($parameter_details);
-
       }
-
-
-      // $vista= view('reportes.filtros')->with('parametros',$parametros)->render();
-      // return Response()->json(['html'=>$vista]);
+      return View::make('discovery.fields',compact('parameter_details'));
     }
   }

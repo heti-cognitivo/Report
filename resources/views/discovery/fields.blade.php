@@ -1,5 +1,25 @@
 
-  <div id='allfilters'>
+<div class="portlet-body form">
+<form method="post" action="{{url()}}/crear_filtros" class="form-horizontal">
+    <div class="form-body">
+        {!! csrf_field() !!}
+        @foreach ($parameter_details as $name=>$detail)
+          <div class="form-group">
+            <label for="single" class="control-label">{{$name}}</label>
+            @if($detail["type"] == "TEXT")
+              <input class="typeahead" id="input{{$detail["tablecol"]}}" type="text" size="10"/>
+              <script>
+                $(document).ready(function () {
+                  addtypeahead('accounting_journal.trans_date');
+                });
+                </script>
+            @endif
+          </div>
+        @endforeach
+</form>
+</div>
+
+  {{-- <div id='allfilters'>
     @foreach ($table_columns as $table=>$columns)
       <div id='{{$table}}' class='container'>
 
@@ -38,4 +58,4 @@
         @endforeach
       </div>
     @endforeach
-  </div>
+  </div> --}}
