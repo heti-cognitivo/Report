@@ -276,6 +276,8 @@ License: You must have a valid license purchased only from themeforest(the above
         <script src="{{url()}}/assets/layouts/layout3/scripts/layout.min.js" type="text/javascript"></script>
         <script src="{{url()}}/assets/layouts/layout3/scripts/demo.min.js" type="text/javascript"></script>
         <script src="{{url()}}/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+
+        <script src="auxiliar/js/typeahead.js"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
 </body>
 

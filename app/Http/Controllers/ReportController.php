@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Requests;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use JasperPHP\JasperPHP;
 use App\Http\Controllers\Controller;
@@ -27,26 +27,36 @@ class ReportController extends Controller
        $empresas= DB::table('app_company')->get();
        $sucursales= DB::table('app_branch')->get();
        $iterator = new \RecursiveDirectoryIterator(base_path() . '/app/Reports/');
-       $filter = new \RegexIterator($iterator->getChildren(), '/.(xml|jasper)$/');
+       $filter = new \RegexIterator($iterator->getChildren(), '/.(jasper)$/');
        $filelist = array();
        foreach($filter as $entry) {
             $filelist[] = substr($entry->getFilename(), 0, strpos($entry->getFilename(), "."));
           }
         return view('dashboard',compact('empresas','sucursales','filelist'));
     }
-    public function show(){
-      //$file = \Config::get('app.reports_path') . "/" . Input::get('file') . ".jasper";
-      $file = base_path() . '/app/Reports/' . Input::get('file') . ".jasper";
+    public function show(Request $request){
+      $data =  json_decode($request->filterdata,true);
+      $parameters = array();
+      $file = $data["file"];
+      \Session::regenerate(true);
+      \Session::put('empresa',trim($data["filters"]["empresa"]));
       if(Session::has('empresa')){
         $jasperPHP = new JasperPHP;
+        $jasper_params = $jasperPHP->list_parameters(
+        base_path() . '/app/Reports/' . $file . ".jasper"
+        )->execute();
+        foreach ($jasper_params as $parameter_description) {
+          $param = preg_split('/\s+/',$parameter_description)[1];
+          $parameters[$param] = "'" . $data["filters"][$param] . "'";
+        }
         $database = \Config::get('database.connections.mysql');
-        $output = base_path() . '/app/Reports/' . Input::get('file');
+        $output = base_path() . '/app/Reports/' . $file;
         $ext = "pdf";
-        $result = $jasperPHP->process(
-            $file,
+        $jasperPHP->process(
+            base_path() . '/app/Reports/' . $file . ".jasper",
             $output,
             array($ext),
-            array("sucursal"=>Session::get('sucursal'),"empresa"=>Session::get('empresa'),"fecha_inicio"=>Session::get('fecha_inicio'),"fecha_fin"=>Session::get('fecha_fin')),
+            $parameters,
             $database,
             false,
             false

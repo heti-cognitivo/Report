@@ -19,11 +19,51 @@ class DiscoveryController extends Controller
       return View::make('discovery.fields',compact('table_columns'));
     }
     public function get_discovery_data(){
-      $table = Input::get('table');
-      $column = Input::get('column');
+      $table_col_name = Input::get('table_col');
+      $table = explode(".",$table_col_name)[0];
+      $column = explode(".",$table_col_name)[1];
+      $isref = false;
+      $refdata = DB::select(DB::raw("SELECT referenced_table_name, referenced_column_name
+                            FROM
+                                information_schema.KEY_COLUMN_USAGE
+                            WHERE
+                                constraint_schema = SCHEMA()
+                            AND
+                                table_name = '" . $table . "'
+                            AND
+                                column_name = '" . $column . "'
+                            AND
+                                referenced_column_name IS NOT NULL"));
+
+      while(count($refdata)){
+        $column = $refdata[0]->referenced_column_name;
+        $table = $refdata[0]->referenced_table_name;
+        $refdata = DB::select(DB::raw("SELECT referenced_table_name, referenced_column_name
+                              FROM
+                                  information_schema.KEY_COLUMN_USAGE
+                              WHERE
+                                  constraint_schema = SCHEMA()
+                              AND
+                                  table_name = '" . $table . "'
+                              AND
+                                  column_name = '" . $column . "'
+                              AND
+                                  referenced_column_name IS NOT NULL"));
+        $isref = true;
+      }
+      if($isref){
+        $findnamecol = DB::select(
+                      DB::raw("SELECT column_name FROM information_schema.columns WHERE table_name = '" . $table . "'"));
+        foreach ($findnamecol as $col) {
+          if($col->column_name == "name"){
+            $column = "name";
+            break;
+          }
+        }
+      }
       $data_array = array();
       $entry_array = array();
-      $data = DB::select(DB::raw("SELECT ". $column ." from " . $table . ";"));
+      $data = DB::select(DB::raw("SELECT ". $column ." FROM " . $table . ";"));
       foreach($data as $entry){
         $entry_array = json_decode(json_encode($entry), True);
         $data_array[] = $entry_array[$column];
@@ -40,7 +80,7 @@ class DiscoveryController extends Controller
       $parameter_details = array();
       $type = "";
       $output = $jasperPHP->list_parameters(
-      base_path() . '/app/Reports/' . Input::get('file') . ".jasper"
+      base_path() . '/app/Reports/' . $file . ".jasper"
       )->execute();
       if (file_exists(base_path() . '/app/Reports/' . Input::get('file') . ".jrxml")) {
         $xml = simplexml_load_file(base_path() . '/app/Reports/' . Input::get('file') . ".jrxml",
@@ -71,6 +111,6 @@ class DiscoveryController extends Controller
           $type = "";
         }
       }
-      return View::make('discovery.fields',compact('parameter_details'));
+      return View::make('discovery.fields',compact('file','parameter_details'));
     }
   }
