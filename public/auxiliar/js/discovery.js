@@ -1,7 +1,10 @@
 $(document).ready(function(){
+
+  var singleProjectContent = $('.cd-project-content')
   $('.report').click(function(event){
     discover_fields($(this),event);
-  })
+  });
+
 });
 function addtypeahead(controlid) {
         var control = $('#filter' + controlid);

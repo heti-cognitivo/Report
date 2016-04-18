@@ -32,7 +32,7 @@ class ReportController extends Controller
        foreach($filter as $entry) {
             $filelist[] = substr($entry->getFilename(), 0, strpos($entry->getFilename(), "."));
           }
-        return view('dashboard',compact('empresas','sucursales','filelist'));
+        return view('discovery.testdiscovery',compact('empresas','sucursales','filelist'));
     }
     public function show(Request $request){
       $data =  json_decode($request->filterdata,true);
