@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura_lista" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a50a19c-a927-4368-b4fe-67be2225fa56">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="remota"/>
+	<parameter name="fecha_inicio" class="java.lang.String"/>
+	<parameter name="fecha_fin" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select s.trans_date as Fecha, s.number as Numero, 
+c.code as 'Nro Cliente', c.name as Nombre, s.comment as 'Motivo Anulacion', 
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM(((sid.quantity * vatco.coef * sid.unit_price)/11)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM(((sid.quantity * vatco.coef *sid.unit_price)/21)),0)
+	 WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((sid.quantity * sid.unit_price)),0)
+END AS IVA,
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM((sid.quantity * vatco.coef * sid.unit_price)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM((sid.quantity * vatco.coef *sid.unit_price)),0)
+     WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((sid.quantity * sid.unit_price)),0)
+END AS Total
+from sales_invoice s inner join contacts c on s.id_contact= c.id_contact
+inner join sales_invoice_detail sid on s.id_sales_invoice = sid.id_sales_invoice
+LEFT JOIN
+	(SELECT app_vat_group.id_vat_group,SUM(app_vat.coefficient) + 1 as coef
+    FROM app_vat_group 
+	LEFT JOIN app_vat_group_details ON app_vat_group.id_vat_group = app_vat_group_details.id_vat_group
+	LEFT JOIN app_vat ON app_vat_group_details.id_vat = app_vat.id_vat GROUP BY app_vat_group.id_vat_group) as vatco
+ON vatco.id_vat_group = sid.id_vat_group
+group by s.number]]>
+	</queryString>
+	<field name="Fecha" class="java.sql.Date"/>
+	<field name="Numero" class="java.lang.String"/>
+	<field name="Nro Cliente" class="java.lang.String"/>
+	<field name="Nombre" class="java.lang.String"/>
+	<field name="Motivo Anulacion" class="java.lang.String"/>
+	<field name="IVA" class="java.math.BigDecimal"/>
+	<field name="Total" class="java.math.BigDecimal"/>
+	<variable name="Total1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
+	<variable name="IVA1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{IVA}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="50" width="80" height="20" uuid="8a7e6392-4ccb-4109-b836-64c218119aba"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Desde:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="280" height="50" uuid="231f1014-175f-4c73-a00a-d4580385392e"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Facturas Lista]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="50" width="100" height="20" uuid="329fe304-b14d-42ae-9567-02cab62ee5a4"/>
+				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="180" y="50" width="80" height="20" uuid="5c340779-cf6c-4469-8d37-7de4230a0741"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Hasta:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="250" y="50" width="100" height="20" uuid="6fc9ce39-49e9-45bd-8bb5-a580cfdbfcce"/>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="7" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="60" height="20" uuid="6c371fc2-f858-4bd9-9c53-abae019bcd58"/>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="60" y="0" width="50" height="20" uuid="f274392d-f494-48ed-a524-9b21c31e1a97"/>
+				<text><![CDATA[Numero]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="110" y="0" width="40" height="20" uuid="be92296d-d0f7-4c51-8f3a-aa515f93202d"/>
+				<text><![CDATA[Nro Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="0" width="130" height="20" uuid="22f96586-d11c-44f5-8b0d-9ee8e3cd9eb9"/>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="1" width="100" height="20" uuid="efc752ba-4264-41eb-87b2-c15efed7d9d3"/>
+				<text><![CDATA[Motivo Anulacion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="0" width="100" height="20" uuid="f4623df3-61de-4faa-850e-5baf1fe8f4c3"/>
+				<text><![CDATA[IVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="1" width="74" height="20" uuid="f197ca53-d856-48fc-a069-16b379ed4fee"/>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="M/d/yy">
+				<reportElement x="0" y="2" width="60" height="20" uuid="809befec-cfac-420c-8ec1-bdb7ef41afb0"/>
+				<textFieldExpression><![CDATA[$F{Fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="59" y="2" width="51" height="20" uuid="d0eb0397-c64e-43f1-9061-238b0793bda7"/>
+				<textFieldExpression><![CDATA[$F{Numero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="2" width="40" height="20" uuid="290a84cc-2bdd-4b76-a2b0-a451fda34efd"/>
+				<textFieldExpression><![CDATA[$F{Nro Cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="2" width="130" height="20" uuid="5e71a383-89b8-4fc7-ac8c-7d3d43a15792"/>
+				<textFieldExpression><![CDATA[$F{Nombre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="280" y="2" width="100" height="20" uuid="06a30e00-e7cf-43aa-b65f-033efa81a474"/>
+				<textFieldExpression><![CDATA[$F{Motivo Anulacion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="380" y="1" width="100" height="20" uuid="3589e0be-f754-48c3-96c4-e2a75e3c0141"/>
+				<textFieldExpression><![CDATA[$F{IVA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="480" y="1" width="74" height="20" uuid="7aa7c9ee-7097-47f9-9f18-1fd594a61260"/>
+				<textFieldExpression><![CDATA[$F{Total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="6" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="cb9328e4-8554-46cd-addf-45234a27434c"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="6e5258ec-3f30-467c-9a2a-13b88b27a64b"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="0ee2e9eb-52b9-4305-8e32-2cffb5b17a8a"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="41" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="#,##0.###">
+				<reportElement x="480" y="0" width="74" height="20" uuid="322785fc-868d-4229-b897-68b4b1d36089"/>
+				<textFieldExpression><![CDATA[$V{Total1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="380" y="0" width="100" height="20" uuid="556fea56-291e-4c00-bfe5-89a0081a3cd3"/>
+				<textFieldExpression><![CDATA[$V{IVA1}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="-20" y="0" width="555" height="1" uuid="2846f177-b6c6-4b3f-a908-59e4337f8c39"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

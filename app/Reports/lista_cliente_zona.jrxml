@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="lista_cliente_zona" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="eb6989a5-2871-4a4c-8233-b6dd3c3f9d0d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="remota"/>
+	<queryString language="SQL">
+		<![CDATA[select  rep.name as Vendedor,rep.id_sales_rep, geo.name as Zona, c.code as Nro, c.alias as Nombre, c.address as Dirección, c.gov_code as Ruc, c.telephone as Teléfono, tabla_ciudad.ciudad  
+from contacts c
+inner join sales_rep rep on c.id_sales_rep = rep.id_sales_rep
+inner join app_geography geo on c.id_geography = geo.id_geography 
+inner join (select app_geography.name as ciudad, app_geography.id_geography,app_geography.parent_id_geography from app_geography where type=3) as tabla_ciudad 
+ on tabla_ciudad.id_geography = geo.parent_id_geography
+where geo.type = 4
+group by c.code
+order by geo.name]]>
+	</queryString>
+	<field name="Zona" class="java.lang.String"/>
+	<field name="Nro" class="java.lang.String"/>
+	<field name="Nombre" class="java.lang.String"/>
+	<field name="Dirección" class="java.lang.String"/>
+	<field name="Ruc" class="java.lang.String"/>
+	<field name="Teléfono" class="java.lang.String"/>
+	<field name="ciudad" class="java.lang.String"/>
+	<field name="Vendedor" class="java.lang.String"/>
+	<field name="id_sales_rep" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{id_sales_rep}]]></groupExpression>
+		<groupHeader>
+			<band height="46">
+				<property name="local_mesure_unitheight" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField>
+					<reportElement x="60" y="20" width="100" height="20" uuid="0bf62134-fc7c-4020-900c-bc44aa1b844f"/>
+					<textFieldExpression><![CDATA[$F{Zona}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="60" height="20" uuid="4d29f626-9a7c-4930-b80b-d695a4643bc7"/>
+					<text><![CDATA[Vendedor:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="20" width="60" height="20" uuid="2d8367b6-96a7-4399-b968-7c76b32f808f"/>
+					<text><![CDATA[Zona:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="60" y="0" width="100" height="20" uuid="60ad008c-27f6-44f2-9d92-061dcddac19e"/>
+					<textFieldExpression><![CDATA[$F{Vendedor}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="-20" y="40" width="555" height="1" uuid="e9b7ff31-0776-4999-9cbe-c7f5f3882ea3"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="480" height="50" uuid="dcb1f7e7-f81a-4fcf-a612-2960e621e0d2"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista de Clientes Agrupados por Vendedor y Zona]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="27" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="1" width="60" height="20" uuid="4b90a7dd-2d06-48c9-a455-d54e835d4a7d"/>
+				<text><![CDATA[Ciudad:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="60" y="1" width="100" height="20" uuid="8124644a-7d31-4028-a793-626e848a64e0"/>
+				<textFieldExpression><![CDATA[$F{ciudad}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="-10" y="1" width="555" height="1" uuid="fa06dfe0-b5b8-41f0-822a-070fc67c64ef"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="20" height="20" uuid="33df664e-0890-4a01-9ec1-98cf2dae5d89"/>
+				<text><![CDATA[Nro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="0" width="60" height="20" uuid="83b31460-4f93-4501-a136-f9345bd9da9f"/>
+				<text><![CDATA[Ruc]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="200" height="20" uuid="c69d7e29-7245-4402-9d84-54cf08cfaec0"/>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="200" height="20" uuid="2aff645f-1b70-4e12-974d-41a8cccaa57a"/>
+				<text><![CDATA[Dirección]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="74" height="20" uuid="4d3a8f96-c2b3-4374-8289-c837af8abb0f"/>
+				<text><![CDATA[Teléfono]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="-10" y="20" width="555" height="1" uuid="db7d44ce-7060-49f8-bd01-24c74a4abc0f"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="3" width="20" height="20" uuid="b577b8ba-ee67-4c7e-a492-d29a771c4e36"/>
+				<textFieldExpression><![CDATA[$F{Nro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="3" width="60" height="20" uuid="d1916044-b2ba-4ea9-868c-ca8d76eee619"/>
+				<textFieldExpression><![CDATA[$F{Ruc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="3" width="200" height="20" uuid="fec6f1d5-d23e-4e8a-ba19-cb0652956e99"/>
+				<textFieldExpression><![CDATA[$F{Nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="3" width="200" height="20" uuid="3c9b51f0-65ed-49e2-8f9f-7bd56c549647"/>
+				<textFieldExpression><![CDATA[$F{Dirección}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="3" width="75" height="20" uuid="f6c65222-15fe-4cf8-b73f-34821acd9ca9"/>
+				<textFieldExpression><![CDATA[$F{Teléfono}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
