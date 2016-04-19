@@ -32,7 +32,7 @@ class ReportController extends Controller
        foreach($filter as $entry) {
             $filelist[] = substr($entry->getFilename(), 0, strpos($entry->getFilename(), "."));
           }
-        return view('discovery.testdiscovery',compact('empresas','sucursales','filelist'));
+        return view('dashboard',compact('empresas','sucursales','filelist'));
     }
     public function show(Request $request){
       $data =  json_decode($request->filterdata,true);
@@ -50,8 +50,8 @@ class ReportController extends Controller
           $parameters[$param] = "'" . $data["filters"][$param] . "'";
         }
         $database = \Config::get('database.connections.mysql');
-        $output = base_path() . '/app/Reports/' . $file;
-        $ext = "pdf";
+        $output = base_path() . '/public/report/' . $file;
+        $ext = "html";
         $jasperPHP->process(
             base_path() . '/app/Reports/' . $file . ".jasper",
             $output,
@@ -61,14 +61,17 @@ class ReportController extends Controller
             false,
             false
         )->execute();
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename='.time(). $file . '.'.$ext);
-        header('Content-Transfer-Encoding: binary');
-        header('Content-Length: ' . filesize($output.'.'.$ext));
-        flush();
-        readfile($output.'.'.$ext);
-        unlink($output.'.'.$ext); // deletes the temporary file
+        // header('Content-Description: File Transfer');
+        // header('Content-Type: application/pdf');
+        // header('Content-Disposition: inline; filename='.time(). $file . '.'.$ext);
+        // header('Content-Transfer-Encoding: binary');
+        // header('Content-Length: ' . filesize($output.'.'.$ext));
+        // flush();
+        // readfile($output.'.'.$ext);
+        // unlink($output.'.'.$ext); // deletes the temporary file
+        // $reportcontent = file_get_contents($output.'.'.$ext);
+        // return View::make('reportes.report',compact('reportcontent'));
+        return url() . "/report/" . $file . "." . $ext;
       }
     }
 }

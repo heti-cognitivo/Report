@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ventas_producto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7954ea98-9ba2-42cb-834b-1f806a8e95fb">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="con_cognitivoerp"/>
+	<queryString language="SQL">
+		<![CDATA[select it.name as etiqueta, i.code, i.name as nombre,aux.suma as cantidad,(round(imv.unit_value/2)) as costo,
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND((vatco.coef * sid.unit_price),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND((vatco.coef *sid.unit_price),0)
+     WHEN vatco.id_vat_group = 3 THEN ROUND((sid.unit_price),0)
+END AS 'Precio Prom.',
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM((sid.quantity * vatco.coef * sid.unit_price)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM((sid.quantity * vatco.coef *sid.unit_price)),0)
+     WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((sid.quantity * sid.unit_price)),0)
+END AS 'Ingreso Generado'
+from sales_invoice si
+inner join
+(SELECT sum(quantity) as suma,sid.id_sales_invoice FROM sales_invoice_detail sid
+inner join item_tag_detail itd on sid.id_item = itd.id_item
+ group by itd.id_item_tag_detail) as aux on aux.id_sales_invoice= si.id_sales_invoice
+inner join sales_invoice_detail sid on sid.id_sales_invoice = si.id_sales_invoice
+inner join items i on sid.id_item = i.id_item
+inner join item_tag_detail itd on i.id_item = itd.id_item
+inner join item_tag it on itd.id_tag = it.id_tag
+inner join item_product ip on ip.id_item= i.id_item
+inner join item_movement im on im.id_item_product= ip.id_item_product 
+inner join item_movement_value imv on imv.id_movement= im.id_movement
+LEFT JOIN
+	(SELECT app_vat_group.id_vat_group,SUM(app_vat.coefficient) + 1 as coef
+    FROM app_vat_group 
+	LEFT JOIN app_vat_group_details ON app_vat_group.id_vat_group = app_vat_group_details.id_vat_group
+	LEFT JOIN app_vat ON app_vat_group_details.id_vat = app_vat.id_vat GROUP BY app_vat_group.id_vat_group) as vatco
+ON vatco.id_vat_group = sid.id_vat_group
+group by i.code]]>
+	</queryString>
+	<field name="etiqueta" class="java.lang.String"/>
+	<field name="code" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cantidad" class="java.math.BigDecimal"/>
+	<field name="costo" class="java.math.BigDecimal"/>
+	<field name="Precio Prom." class="java.math.BigDecimal"/>
+	<field name="Ingreso Generado" class="java.math.BigDecimal"/>
+	<field name="nombre" class="java.lang.String"/>
+	<variable name="cantidad1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
+	</variable>
+	<variable name="Ingreso Generado1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{Ingreso Generado}]]></variableExpression>
+	</variable>
+	<variable name="Precio Prom.1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{Precio Prom.}]]></variableExpression>
+	</variable>
+	<variable name="cantidad2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
+	</variable>
+	<variable name="Ingreso Generado2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Ingreso Generado}]]></variableExpression>
+	</variable>
+	<variable name="Precio Prom.2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Precio Prom.}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{etiqueta}]]></groupExpression>
+		<groupHeader>
+			<band height="23">
+				<property name="local_mesure_unitheight" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField>
+					<reportElement x="0" y="1" width="100" height="20" uuid="9359c41c-8c0e-4e2e-a499-8cca22fea2b8"/>
+					<textFieldExpression><![CDATA[$F{etiqueta}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="-1" y="20" width="555" height="1" uuid="9f08b038-9948-446a-aff0-1c54f4f7a896"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="23">
+				<property name="local_mesure_unitheight" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField pattern="#,##0.###">
+					<reportElement x="190" y="0" width="90" height="20" uuid="1b990c9b-d976-4aec-962e-8bd8a21e6ef9"/>
+					<textFieldExpression><![CDATA[$V{cantidad1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.###">
+					<reportElement x="280" y="0" width="100" height="20" uuid="a2c71ff9-050d-48ee-b58f-091a1ce3b506"/>
+					<textFieldExpression><![CDATA[$V{Ingreso Generado1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.###">
+					<reportElement x="380" y="0" width="100" height="20" uuid="11cb5272-aea4-44b6-a199-97f20b50da19"/>
+					<textFieldExpression><![CDATA[$V{Precio Prom.1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="50" y="1" width="30" height="20" uuid="5c8ae2b4-c52f-4b7a-b5ae-d6e7e4703571"/>
+					<text><![CDATA[Total:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="80" y="1" width="100" height="20" uuid="e285828b-3e51-4dcf-9122-4ceb9d9ab7e7"/>
+					<textFieldExpression><![CDATA[$F{etiqueta}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="280" height="50" uuid="39d1848a-7a8b-4076-b4e4-34fc621b0173"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ventas por Producto]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="6" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="190" y="0" width="90" height="20" uuid="2bbad7dd-bb0b-46da-9f7c-ae552aff8a84"/>
+				<text><![CDATA[Cantidad Vendida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="100" height="20" uuid="58c3003d-e5ff-490d-b9ec-78d43de4cf99"/>
+				<text><![CDATA[Ingreso Generado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="75" height="20" uuid="4a86cd1a-9637-4302-a144-0d7985020de3"/>
+				<text><![CDATA[Costos]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="#,##0.###">
+				<reportElement x="190" y="3" width="90" height="20" uuid="d1ee9405-f78a-4d8d-94ff-6b6e8094e28b"/>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="280" y="2" width="100" height="20" uuid="359df7a2-a183-4874-bb50-5ea5930543f1"/>
+				<textFieldExpression><![CDATA[$F{Ingreso Generado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="380" y="3" width="100" height="20" uuid="64d5a182-8266-4e34-a1c4-2f8e9a738789"/>
+				<textFieldExpression><![CDATA[$F{Precio Prom.}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="480" y="2" width="75" height="20" uuid="75682408-4bef-45cc-af31-474f888977e2"/>
+				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="2" width="180" height="20" uuid="63b60c23-5502-43ab-ba7c-088f71f92a1f"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="aad8dfea-9bb4-46b1-95fc-beeba6142546"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="da2883bc-58cf-47d6-93d9-9bcfab49966b"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="70e4b0f5-6c12-43e8-8f93-fbbd6e123a8e"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="43" splitType="Stretch">
+			<textField pattern="#,##0.###">
+				<reportElement x="190" y="2" width="90" height="20" uuid="7be8fc93-4c7a-4d1e-999c-a2bc03658236"/>
+				<textFieldExpression><![CDATA[$V{cantidad2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="280" y="2" width="100" height="20" uuid="091b13e8-2e51-4571-818e-8c7d7e523098"/>
+				<textFieldExpression><![CDATA[$V{Ingreso Generado2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="130" y="2" width="60" height="20" uuid="0706856a-0210-42c0-b9c4-c68b7ecce015"/>
+				<text><![CDATA[Totales:]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="-1" y="1" width="555" height="1" uuid="253b9c75-ad80-4046-bf07-dbdb4acddc75"/>
+			</line>
+			<textField pattern="#,##0.###">
+				<reportElement x="380" y="2" width="100" height="20" uuid="e181c4f2-ae28-42d2-b071-b97cd72c93e7"/>
+				<textFieldExpression><![CDATA[$V{Precio Prom.2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

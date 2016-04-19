@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="notas_credito_lista" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="542ff10c-b391-44e8-8e48-a604f2a56f74">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="remota"/>
+	<parameter name="fecha_inicio" class="java.lang.String"/>
+	<parameter name="fecha_fin" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select sr.trans_date as Fecha, sr.number as NroDevolucion, c.code as NroCliente, c.alias as Nombre, sr.comment as MotivoAnulacion,
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM(((srd.quantity * vatco.coef * srd.unit_price)/11)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM(((srd.quantity * vatco.coef * srd.unit_price)/21)),0)
+	 WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((srd.quantity * srd.unit_price)),0)
+END AS IVA,
+round(sum(srd.quantity * srd.unit_price),0) as 'Total Sin Iva',
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM((srd.quantity * vatco.coef * srd.unit_price)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM((srd.quantity * vatco.coef * srd.unit_price)),0)
+     WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((srd.quantity * srd.unit_price)),0)
+END AS Total
+from sales_return sr
+inner join sales_return_detail srd on sr.id_sales_return = srd.id_sales_return
+inner join contacts c on sr.id_contact = c.id_contact
+LEFT JOIN
+	(SELECT app_vat_group.id_vat_group,SUM(app_vat.coefficient) + 1 as coef
+    FROM app_vat_group 
+	LEFT JOIN app_vat_group_details ON app_vat_group.id_vat_group = app_vat_group_details.id_vat_group
+	LEFT JOIN app_vat ON app_vat_group_details.id_vat = app_vat.id_vat GROUP BY app_vat_group.id_vat_group) as vatco
+ON vatco.id_vat_group = srd.id_vat_group
+group by sr.number]]>
+	</queryString>
+	<field name="Fecha" class="java.sql.Timestamp"/>
+	<field name="NroDevolucion" class="java.lang.String"/>
+	<field name="NroCliente" class="java.lang.String"/>
+	<field name="Nombre" class="java.lang.String"/>
+	<field name="MotivoAnulacion" class="java.lang.String"/>
+	<field name="IVA" class="java.math.BigDecimal"/>
+	<field name="Total Sin Iva" class="java.math.BigDecimal"/>
+	<field name="Total" class="java.math.BigDecimal"/>
+	<variable name="IVA1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{IVA}]]></variableExpression>
+	</variable>
+	<variable name="Total Sin Iva1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total Sin Iva}]]></variableExpression>
+	</variable>
+	<variable name="Total1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
+	<variable name="Total2" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="180" y="50" width="80" height="20" uuid="6db7394d-5e83-40cf-b932-0b67670479c8"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Hasta:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="50" width="100" height="20" uuid="b27f9d02-a582-4977-90e0-1669789bcb2d"/>
+				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="50" width="80" height="20" uuid="2f5c633e-62ab-4aa4-b55c-f7b5c219e50c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Desde:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="250" y="50" width="100" height="20" uuid="67129ffd-5e3a-43de-8eb2-6dc7f4752305"/>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="280" height="50" uuid="34365a04-8b31-4a2e-b22b-2eb0c1fb369a"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Facturas Lista]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="6" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="20" uuid="fe4871fd-fd6e-4416-8900-d23ed80a489f"/>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="0" width="80" height="20" uuid="849bfe97-ffe4-4a5d-a37e-533c1629a215"/>
+				<text><![CDATA[NroDevolucion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="0" width="60" height="20" uuid="fa415e53-055e-4f37-b791-9c974c4b77df"/>
+				<text><![CDATA[NroCliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="0" width="120" height="20" uuid="a9aa1d1a-59fc-47e7-a7e5-cb57e04748be"/>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="0" width="100" height="20" uuid="45234082-40c9-4ebd-b9fd-c962c78c96b6"/>
+				<text><![CDATA[MotivoAnulacion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="0" width="45" height="20" uuid="ef57511a-df88-4ccd-8f3e-5270ec8e4522"/>
+				<text><![CDATA[IVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="0" width="55" height="20" uuid="d1beadfc-e130-4e73-b7ab-47f3585ec76b"/>
+				<text><![CDATA[Total Sin Iva]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="510" y="0" width="45" height="20" uuid="931a4ed8-2078-473f-9699-55b35a769d86"/>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="3" width="50" height="20" uuid="e42e62bd-f68d-48d1-9705-72a0d7de055f"/>
+				<textFieldExpression><![CDATA[$F{Fecha}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="50" y="3" width="80" height="20" uuid="f13453fc-60ca-487b-b2cd-93f2c768317f"/>
+				<textFieldExpression><![CDATA[$F{NroDevolucion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="3" width="60" height="20" uuid="d5e1c2f7-dc46-4f20-858d-68585691a447"/>
+				<textFieldExpression><![CDATA[$F{NroCliente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="190" y="3" width="120" height="20" uuid="199e6aa1-8828-48f7-8837-b1171136f8e1"/>
+				<textFieldExpression><![CDATA[$F{Nombre}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="310" y="3" width="100" height="20" uuid="0bcaf632-0c8a-4e3e-afec-4709bf905d41"/>
+				<textFieldExpression><![CDATA[$F{MotivoAnulacion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="410" y="3" width="45" height="20" uuid="0a5af0ac-b39e-4333-9975-940b939b7cb9"/>
+				<textFieldExpression><![CDATA[$F{IVA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="455" y="3" width="55" height="20" uuid="d7d1c17d-3011-44a3-9cbb-45c3eff4522b"/>
+				<textFieldExpression><![CDATA[$F{Total Sin Iva}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="510" y="3" width="45" height="20" uuid="11f92ce2-130f-41a5-be96-04165771444f"/>
+				<textFieldExpression><![CDATA[$F{Total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="cdbc80c9-dc87-4dec-a8ca-0d5825118ba4"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="39031ee5-beb5-44bc-b0ca-4823684828c5"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="748cfc0e-c099-47e2-b549-f66659c4ea82"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="43" splitType="Stretch">
+			<textField pattern="#,##0.###">
+				<reportElement x="410" y="0" width="45" height="20" uuid="e5985ebc-417f-42cb-be10-b098b0408285"/>
+				<textFieldExpression><![CDATA[$V{IVA1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="455" y="0" width="55" height="20" uuid="028a49ff-ddaa-476e-bfb0-5b7d388a9467"/>
+				<textFieldExpression><![CDATA[$V{Total Sin Iva1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="510" y="0" width="45" height="20" uuid="a03f6b0c-6e04-40dd-a97e-ca73741c3621"/>
+				<textFieldExpression><![CDATA[$V{Total1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="0" width="100" height="20" uuid="c23634fc-7d70-4029-894e-d9f472e1c97c"/>
+				<textFieldExpression><![CDATA[$V{Total2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="110" height="20" uuid="80ba0cd2-3441-4eca-bda9-15ac46acb72c"/>
+				<text><![CDATA[Cantidad de Registros:]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="-1" y="0" width="551" height="1" uuid="5f1b6726-d8a6-4214-866f-2fb29f5d3238">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Margen de Ganacia" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bbc1ee97-894b-4aa1-8afc-a80dc0fb8a23">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="GUAZU"/>
+	<parameter name="Fecha Inicio" class="java.lang.String"/>
+	<parameter name="Fecha Fin" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT si.trans_date as Fecha,
+	sum(sid.quantity) as Cantidad,
+    if(vatco.id_vat_group=1,ROUND(SUM(((sid.quantity * vatco.coef * sid.unit_price)/11)),0),0) as iva10, 
+if(vatco.id_vat_group=2,ROUND(SUM(((sid.quantity * vatco.coef *sid.unit_price)/21)),0),0) as iva5,
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM((sid.quantity * vatco.coef * sid.unit_price)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM((sid.quantity * vatco.coef *sid.unit_price)),0)
+     WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((sid.quantity * sid.unit_price)),0)
+END AS 'Total Con IVA',
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM((sid.quantity * sid.unit_price)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM((sid.quantity *sid.unit_price)),0)
+     WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((sid.quantity * sid.unit_price)),0)
+END AS 'Total Sin IVA'
+FROM sales_invoice_detail sid
+	 INNER JOIN sales_invoice si ON 
+	 si.id_sales_invoice = sid.id_sales_invoice 
+     LEFT JOIN
+	(SELECT app_vat_group.id_vat_group,SUM(app_vat.coefficient) + 1 as coef
+    FROM app_vat_group 
+	LEFT JOIN app_vat_group_details ON app_vat_group.id_vat_group = app_vat_group_details.id_vat_group
+	LEFT JOIN app_vat ON app_vat_group_details.id_vat = app_vat.id_vat GROUP BY app_vat_group.id_vat_group) as vatco   
+    
+ON vatco.id_vat_group = sid.id_vat_group
+Where  si.trans_date > $P{Fecha Inicio} and si.trans_date < $P{Fecha Fin}
+group by vatco.coef
+	
+
+]]>
+	</queryString>
+	<field name="Fecha" class="java.sql.Timestamp"/>
+	<field name="Cantidad" class="java.math.BigDecimal"/>
+	<field name="Total Con IVA" class="java.math.BigDecimal"/>
+	<field name="Total Sin IVA" class="java.math.BigDecimal"/>
+	<field name="iva10" class="java.math.BigDecimal"/>
+	<field name="iva5" class="java.math.BigDecimal"/>
+	<variable name="Total Con IVA1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total Con IVA}]]></variableExpression>
+	</variable>
+	<variable name="Total Sin IVA1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total Sin IVA}]]></variableExpression>
+	</variable>
+	<variable name="Cantidad1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Cantidad}]]></variableExpression>
+	</variable>
+	<variable name="iva51" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{iva5}]]></variableExpression>
+	</variable>
+	<variable name="iva101" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{iva10}]]></variableExpression>
+	</variable>
+	<variable name="total_iva" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{iva51}.doubleValue()+$V{iva101}.doubleValue()]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{Fecha}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="37" splitType="Stretch">
+			<staticText>
+				<reportElement x="172" y="4" width="210" height="30" uuid="b3de13b9-2bac-467d-bd94-4460e538c5c5"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Black" size="18"/>
+				</textElement>
+				<text><![CDATA[Margen De Ganancia]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="36" width="595" height="1" uuid="f6321a0f-5632-4184-b606-70c945293ab2"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<textField>
+				<reportElement x="61" y="10" width="100" height="20" uuid="e7df09a9-14cc-4bda-82c6-402208d7df7e"/>
+				<textFieldExpression><![CDATA[$P{Fecha Inicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="231" y="10" width="90" height="20" uuid="9a661864-3475-4a16-b7a2-2244b5115278"/>
+				<textFieldExpression><![CDATA[$P{Fecha Fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-1" y="10" width="82" height="20" uuid="eaa848f2-7207-4dd3-908b-d9de072b5ac0"/>
+				<text><![CDATA[Fecha Inicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="178" y="11" width="82" height="20" uuid="2d66ca5f-dbf2-44ea-81ad-d25271e84120"/>
+				<text><![CDATA[Fecha Fin]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement x="4" y="0" width="69" height="20" uuid="bab6969a-2811-46d5-8830-1d0f4faa6510"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="0" width="82" height="20" uuid="1b899160-d851-4356-8f14-21d6909697b1"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="100" height="20" uuid="8c853510-6956-4838-81d1-9b769d9cb080"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Con IVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="100" height="20" uuid="55fccb21-5ecb-4aa3-8cbe-1fc8e3efee95"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Sin IVA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="90" y="2" width="63" height="20" uuid="58fafbae-06a7-4fae-9e98-1f2cd1ca511d"/>
+				<textFieldExpression><![CDATA[$F{Cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="1" width="100" height="20" uuid="4d35b6d7-7cce-4a34-ad71-2813609283b5"/>
+				<textFieldExpression><![CDATA[$F{Total Con IVA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="282" y="2" width="100" height="20" uuid="1e8e0a90-ec58-429f-8c7b-dad92c104b29"/>
+				<textFieldExpression><![CDATA[$F{Total Sin IVA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-1" y="0" width="69" height="20" uuid="bc56123f-d08e-4af0-8e4d-e497da1a5370"/>
+				<textFieldExpression><![CDATA[$F{Fecha}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="55" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="83" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="180" y="2" width="83" height="20" uuid="8066c606-e0e3-4271-a1ad-93253f588dbc"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Total Con IVA1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="2" width="100" height="20" uuid="90689e0d-1d67-46d8-82c8-7e6037c2aa96"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Total Sin IVA1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="2" width="97" height="20" uuid="b47baf82-bff3-4424-bd98-6c2d2baae507"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Cantidad1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-1" y="2" width="83" height="20" uuid="ca60baf8-1c0c-44ff-ab60-c83d85cd6862"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total General]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="83" height="20" uuid="92954e3d-3ec7-4292-92c2-ed300bc34075"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Resumen Iva]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="4" y="50" width="46" height="20" uuid="bce7bd87-6e2e-4cc2-86ca-6150a9f4b279"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Iva 5%:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="189" y="50" width="51" height="20" uuid="82cacbe2-58a4-4f90-b7b0-2d1d3ac54c0f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Iva 10%:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="50" width="60" height="20" uuid="ae75202d-4e7e-4f49-bb17-c22db22ee189"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Iva:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="50" y="50" width="100" height="20" uuid="ffcb3d14-e797-4d7f-873d-2a79ebf23bc9"/>
+				<textFieldExpression><![CDATA[$V{iva51}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="240" y="50" width="100" height="20" uuid="9b8fd9cb-b5a6-4ac0-a448-d0b1dd641581"/>
+				<textFieldExpression><![CDATA[$V{iva101}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="50" width="100" height="20" uuid="d962cfa8-be1d-4a06-a08a-b0aad6bed98c"/>
+				<textFieldExpression><![CDATA[$V{total_iva}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

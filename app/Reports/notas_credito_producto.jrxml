@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="notas_credito_producto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="85cf4a01-4d4b-436c-974c-fe895a945991">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="con_cognitivoerp"/>
+	<parameter name="fecha_fin" class="java.lang.String"/>
+	<parameter name="fecha_inicio" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT it.name as Familia, i.code, i.name as Producto, aux.suma as Cantidad, 
+round(sum(srd.quantity * srd.unit_price),0) as TotalsinIVA , imv.unit_value as costo, (round(sum(srd.quantity * srd.unit_price),0) - imv.unit_value) as utilidadbruta,
+CASE WHEN vatco.id_vat_group = 1 THEN ROUND(SUM((srd.quantity * vatco.coef * srd.unit_price)),0)
+	 WHEN vatco.id_vat_group = 2 THEN ROUND(SUM((srd.quantity * vatco.coef * srd.unit_price)),0)
+     WHEN vatco.id_vat_group = 3 THEN ROUND(SUM((srd.quantity * srd.unit_price)),0)
+END AS Total
+FROM sales_return sr
+
+inner join
+(SELECT sum(quantity) as suma,sid.id_sales_return FROM sales_return_detail sid
+inner join item_tag_detail itd on sid.id_item = itd.id_item
+ group by itd.id_item_tag_detail) as aux on aux.id_sales_return= sr.id_sales_return
+
+INNER JOIN sales_return_detail srd ON sr.id_sales_return = srd.id_sales_return
+INNER JOIN items i ON srd.id_item = i.id_item
+INNER JOIN item_tag_detail itd on i.id_item = itd.id_item 
+inner join item_tag it ON itd.id_tag = it.id_tag
+inner join item_product ip on ip.id_item= i.id_item
+inner join item_movement im on im.id_item_product= ip.id_item_product 
+inner join item_movement_value imv on imv.id_movement= im.id_movement
+LEFT JOIN
+	(SELECT app_vat_group.id_vat_group,SUM(app_vat.coefficient) + 1 as coef
+    FROM app_vat_group 
+	LEFT JOIN app_vat_group_details ON app_vat_group.id_vat_group = app_vat_group_details.id_vat_group
+	LEFT JOIN app_vat ON app_vat_group_details.id_vat = app_vat.id_vat GROUP BY app_vat_group.id_vat_group) as vatco
+ON vatco.id_vat_group = srd.id_vat_group
+group by i.code]]>
+	</queryString>
+	<field name="Familia" class="java.lang.String"/>
+	<field name="code" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Producto" class="java.lang.String"/>
+	<field name="Cantidad" class="java.math.BigDecimal"/>
+	<field name="TotalsinIVA" class="java.math.BigDecimal"/>
+	<field name="costo" class="java.math.BigDecimal"/>
+	<field name="utilidadbruta" class="java.math.BigDecimal"/>
+	<field name="Total" class="java.math.BigDecimal"/>
+	<variable name="TotalsinIVA1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{TotalsinIVA}]]></variableExpression>
+	</variable>
+	<variable name="costo1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{costo}]]></variableExpression>
+	</variable>
+	<variable name="utilidadbruta1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{utilidadbruta}]]></variableExpression>
+	</variable>
+	<variable name="TotalsinIVA2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{TotalsinIVA}]]></variableExpression>
+	</variable>
+	<variable name="costo2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{costo}]]></variableExpression>
+	</variable>
+	<variable name="utilidadbruta2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{utilidadbruta}]]></variableExpression>
+	</variable>
+	<variable name="Cantidad1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{Cantidad}]]></variableExpression>
+	</variable>
+	<variable name="Total1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Total}]]></variableExpression>
+	</variable>
+	<variable name="Cantidad2" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{Cantidad}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{Familia}]]></groupExpression>
+		<groupHeader>
+			<band height="25">
+				<property name="local_mesure_unitheight" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField>
+					<reportElement x="0" y="3" width="80" height="20" uuid="f8673ec4-fbe3-4b67-ae9b-8932e605b4ed"/>
+					<textFieldExpression><![CDATA[$F{Familia}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement positionType="FixRelativeToBottom" x="-1" y="21" width="555" height="1" uuid="2bad67ac-7ad1-45de-8dab-3dab3795c692"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="35">
+				<property name="local_mesure_unitheight" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<textField pattern="#,##0.###">
+					<reportElement x="280" y="0" width="100" height="20" uuid="1b2f0439-658e-47ad-a2bf-57de66296838"/>
+					<textFieldExpression><![CDATA[$V{TotalsinIVA1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.###">
+					<reportElement x="380" y="0" width="100" height="20" uuid="a500a4f2-a8fd-4db3-8f72-05f9109f6b73"/>
+					<textFieldExpression><![CDATA[$V{costo1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.###">
+					<reportElement x="480" y="0" width="75" height="20" uuid="42a7a767-3d4c-48d8-adb1-fe763e8c60bb"/>
+					<textFieldExpression><![CDATA[$V{utilidadbruta1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="60" y="0" width="40" height="20" uuid="c5c06192-5945-4fea-b85a-6f8f1d6acfb9"/>
+					<text><![CDATA[Total:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="100" y="0" width="80" height="20" uuid="5ea4d166-22d6-40a1-a775-3c3164abe890"/>
+					<textFieldExpression><![CDATA[$F{Familia}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="180" y="0" width="100" height="20" uuid="102d0ee6-7192-46ad-8a78-77cbc4c3dbb9"/>
+					<textFieldExpression><![CDATA[$V{Cantidad2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="180" y="50" width="80" height="20" uuid="67d1b011-16ae-4ada-9226-ebc591b6eca1"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Hasta:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="50" width="100" height="20" uuid="b9cf9f11-e408-4fae-9518-e190c9b52399"/>
+				<textFieldExpression><![CDATA[$P{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="50" width="80" height="20" uuid="235b9900-40b9-4f94-9937-7c30eca716e4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Desde:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="250" y="50" width="100" height="20" uuid="d92ce398-d10a-4536-9dc5-cfef2e315285"/>
+				<textFieldExpression><![CDATA[$P{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="300" height="50" uuid="6ac89cc3-4067-4647-ba32-b4f807a4cd70"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Notas Crédito por Producto]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="20" uuid="2745c898-16f9-43af-8737-b876efddfa86"/>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="0" width="130" height="20" uuid="936ad797-f834-4bfe-b271-39f923d0133b"/>
+				<text><![CDATA[Producto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="0" width="90" height="20" uuid="0df104c7-363e-4f70-8c4d-02a2c117a6fe"/>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="0" width="100" height="20" uuid="e39fc225-53c6-4066-8ba8-79e085e4701a"/>
+				<text><![CDATA[Costo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="0" width="75" height="20" uuid="9d2cdd74-23bd-4344-9c6f-6b79e84d079a"/>
+				<text><![CDATA[Utiliad Bruta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="100" height="20" uuid="01dd9861-a1c2-4ab5-8b2c-16499bdb73e8"/>
+				<text><![CDATA[Total Sin Iva]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="0" width="50" height="20" uuid="4424da67-93db-4d63-8a18-ea67ad3cd6c8"/>
+				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="0" width="130" height="20" uuid="181ea11d-5fc1-48d4-bb5b-cabfcc4c5aac"/>
+				<textFieldExpression><![CDATA[$F{Producto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="190" y="0" width="90" height="20" uuid="7bcbfeec-44e0-4797-92b4-96c0f41aefe3"/>
+				<textFieldExpression><![CDATA[$F{Cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="280" y="0" width="100" height="20" uuid="d0f8057e-eec2-4cc0-a9b8-f8a1514c900b"/>
+				<textFieldExpression><![CDATA[$F{TotalsinIVA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="380" y="0" width="100" height="20" uuid="6399ada8-7762-4a5f-ba11-94ee15225d4f"/>
+				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="480" y="0" width="74" height="20" uuid="c9d02955-892b-4773-a3aa-391feebb27fd"/>
+				<textFieldExpression><![CDATA[$F{utilidadbruta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="1a46a028-b240-4f34-a20a-2ff5ae38fed1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="dd7592bb-2cbb-436e-b26d-9fd16033f900"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="74b17ed4-270e-4d35-a2ed-85a4176f2038"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="45" splitType="Stretch">
+			<textField pattern="#,##0.###">
+				<reportElement x="280" y="0" width="100" height="20" uuid="bbadc356-7d37-4bf0-b45f-bd8523599c92"/>
+				<textFieldExpression><![CDATA[$V{TotalsinIVA2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="380" y="0" width="100" height="20" uuid="04d6f105-edcb-4ae0-baab-f223ed2f7088"/>
+				<textFieldExpression><![CDATA[$V{costo2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="480" y="0" width="75" height="20" uuid="1f068139-0c1d-4070-8c61-de84387d1c66"/>
+				<textFieldExpression><![CDATA[$V{utilidadbruta2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="280" y="20" width="100" height="20" uuid="1f43ffba-fc5b-4381-be1d-2ff8863a21cf"/>
+				<textFieldExpression><![CDATA[$V{Total1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="190" y="0" width="90" height="20" uuid="58bc2f6b-886d-4415-aa51-8a9414a561ec"/>
+				<text><![CDATA[Totales:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="20" width="90" height="20" uuid="b59d1f81-b804-42b0-96ac-3c487fa0684c"/>
+				<text><![CDATA[Total con Iva:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

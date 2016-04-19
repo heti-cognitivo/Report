@@ -1,10 +1,18 @@
 $(document).ready(function(){
 
-  var singleProjectContent = $('.cd-project-content')
-  $('.report').click(function(event){
-    discover_fields($(this),event);
-  });
-
+  var
+		report = $('.cd-item-info'),
+		singleProjectContent = $('.cd-project-content');
+  report.click(function(){
+    discover_fields($(this));
+		singleProjectContent.addClass('is-visible');
+		$("#cd-gallery-items").css('display','none');
+	});
+  singleProjectContent.on('click', '.close', function(event){
+		event.preventDefault();
+		singleProjectContent.removeClass('is-visible');
+		$("#cd-gallery-items").removeAttr('style');
+	});
 });
 function addtypeahead(controlid) {
         var control = $('#filter' + controlid);
@@ -24,31 +32,41 @@ function addtypeahead(controlid) {
           source: response
         });
       }
-function discover_fields(repctrl,event){
-  var file = repctrl[0].getAttribute('id');
+function discover_fields(repctrl){
+  var file = repctrl.find('a').attr('id');
   $.ajax({
     url:'showfilters?file='+file,
     type:"GET",
     success:function(divhtml){
-      var divfilters = $(repctrl).parent().next(".filters");
-      $(divfilters).html(divhtml);
-      $(divfilters).fadeTo(1200,1);
+      $(".filters").html(divhtml);
+      $(".filters").fadeIn("slow");
     },
     error:function(xhr){
       console.log(xhr.statusText + xhr.responseText);
     }
     });
 }
-$(document).on('submit',"#form_filters",function(){
+$(document).on('click',"#create_report",function(){
   var json_data = {filters:{},file:""};
   var json_filters = {}
   var name = "";
-  var file = $(".report").attr("id");
+  var file = $(".cd-item-info").find("a").attr("id");
   $(":input[id^='filter']").each(function(index){
     name = $(this).attr("id").substring(6);
     json_data.filters[name] = $(this).val();
   });
   json_data.file = file;
   $("#hdndata").val(JSON.stringify(json_data));
-  alert($("#hdndata").val());
+  $.ajax({
+    url:'showreport?filterdata=' + JSON.stringify(json_data),
+    type:'GET',
+    success:function(file){
+      $("#divinforme").load(file);
+      $(".informeheader").show();
+      $(".informe").show();
+    },
+    error:function(xhr){
+      console.log(xhr.statusText + xhr.responseText);
+    }
+  })
 });
