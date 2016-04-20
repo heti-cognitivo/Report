@@ -100,15 +100,18 @@
     @foreach ($filelist as $file)
 		<li>
 			<ul class="cd-item-wrapper">
-				<li class="cd-item-front"><a href="#0"><img src="{{url()}}/assets/global/img/report.png" alt="Preview image"></a></li>
-				<!-- <li class="cd-item-out">...</li> -->
+				<li class="cd-item-front">
+                    <a href="#0">
+                        <img src="{{url()}}/assets/global/img/chart.png" alt="Jasper">
+                    </a>
+                </li>
 			</ul> <!-- cd-item-wrapper -->
 
 			<div class="cd-item-info">
 				<b><a href="#0" id="{{$file}}">{{$file}}</a></b>
 			</div> <!-- cd-item-info -->
 		</li>
-@endforeach
+     @endforeach
 
 	</ul>
 <div class="cd-project-content">
