@@ -79,6 +79,7 @@ class DiscoveryController extends Controller
       $query = "";
       $parameter_details = array();
       $type = "";
+      $noparam = true;
       $output = $jasperPHP->list_parameters(
       base_path() . '/app/Reports/' . $file . ".jasper"
       )->execute();
@@ -101,16 +102,24 @@ class DiscoveryController extends Controller
           $parameter_details[$parameter_explode[1]]["type"] = $type;
           $parameter_jasper = '\$P{' . $parameter_explode[1] . '}';
           $query_split = preg_split('/' . $parameter_jasper . '/',$query);
-          if(count($query_split)>=1){
+          if(count($query_split)>1){
             $table_col_name=explode(' ',$query_split[0]);
             $pos = count($table_col_name)-3;
             $parameter_details[$parameter_explode[1]]["tablecol"] = $table_col_name[$pos];
+            $noparam = false;
+          }
+          else{
+            $parameter_details[$parameter_explode[1]]["tablecol"] = "";
+            $noparam = true;
           }
           unset($parameter_explode);
           $parameter_explode = array();
           $type = "";
         }
       }
-      return View::make('discovery.fields',compact('file','parameter_details'));
+      if(!$noparam)
+        return View::make('discovery.fields',compact('file','parameter_details'));
+      else
+        return "NOFILTERS";
     }
   }

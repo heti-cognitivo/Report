@@ -38,8 +38,27 @@ function discover_fields(repctrl){
     url:'showfilters?file='+file,
     type:"GET",
     success:function(divhtml){
-      $(".filters").html(divhtml);
-      $(".filters").fadeIn("slow");
+      console.log(divhtml);
+      if(divhtml == "NOFILTERS"){
+        var json_data = {filters:{},file:""};
+        json_data.file = file;
+        $.ajax({
+          url:'showreport?filterdata='+ JSON.stringify(json_data),
+          type:'GET',
+          success:function(file){
+            $("#divinforme").load(file);
+            $(".informeheader").show();
+            $(".informe").show();
+          },
+          error:function(xhr){
+            console.log(xhr.statusText + xhr.responseText);
+          }
+        });
+      }
+      else{
+        $(".filters").html(divhtml);
+        $(".filters").fadeIn("slow");
+      }
     },
     error:function(xhr){
       console.log(xhr.statusText + xhr.responseText);
@@ -68,5 +87,5 @@ $(document).on('click',"#create_report",function(){
     error:function(xhr){
       console.log(xhr.statusText + xhr.responseText);
     }
-  })
+  });
 });
