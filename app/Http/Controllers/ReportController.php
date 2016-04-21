@@ -24,15 +24,15 @@ class ReportController extends Controller
      */
     public function index()
     {
-       $empresas= DB::table('app_company')->get();
-       $sucursales= DB::table('app_branch')->get();
+    //    $empresas= DB::table('app_company')->get();
+    //    $sucursales= DB::table('app_branch')->get();
        $iterator = new \RecursiveDirectoryIterator(base_path() . '/app/Reports/');
        $filter = new \RegexIterator($iterator->getChildren(), '/.(jasper)$/');
        $filelist = array();
        foreach($filter as $entry) {
             $filelist[] = substr($entry->getFilename(), 0, strpos($entry->getFilename(), "."));
           }
-        return view('dashboard',compact('empresas','sucursales','filelist'));
+        return view('dashboard',compact('filelist'));
     }
     public function show(Request $request){
       $data =  json_decode($request->filterdata,true);

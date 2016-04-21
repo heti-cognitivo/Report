@@ -92,7 +92,9 @@ header h1 {
   margin-bottom: 6em;
 }
 #cd-gallery-items > li img {
-  width: 100%;
+    padding: 16px;
+    margin-left: auto;
+    margin-right: auto;
   display: block;
 }
 @media only screen and (min-width: 768px) {
