@@ -90,7 +90,6 @@ class DiscoveryController extends Controller
         $query = $array["queryString"];
         foreach ($output as $parameter_description) {
           $parameter_explode = preg_split('/\s+/',$parameter_description);
-          $parameter_explode[2] = "JAVA.SQL.TIMESTAMP";
           if(in_array(strtoupper($parameter_explode[2]),$text)){
             $type = "TEXT";
           }
