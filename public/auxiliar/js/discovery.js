@@ -10,6 +10,14 @@ $(document).ready(function(){
 	});
   singleProjectContent.on('click', '.close', function(event){
 		event.preventDefault();
+    $(".filters").html("");
+    $(".filters").hide();
+    $("#divinforme").html("");
+    $("#divinforme").hide();
+    $(".informeheader").hide();
+    $(".typeahead").each(function(){
+      $(this).typeahead(destroy);
+    });
 		singleProjectContent.removeClass('is-visible');
 		$("#cd-gallery-items").removeAttr('style');
 	});

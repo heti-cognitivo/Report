@@ -90,6 +90,7 @@ class DiscoveryController extends Controller
         $query = $array["queryString"];
         foreach ($output as $parameter_description) {
           $parameter_explode = preg_split('/\s+/',$parameter_description);
+          $parameter_explode[2] = "JAVA.SQL.TIMESTAMP";
           if(in_array(strtoupper($parameter_explode[2]),$text)){
             $type = "TEXT";
           }
@@ -99,18 +100,15 @@ class DiscoveryController extends Controller
           else {
             $type = "NUMBER";
           }
-          $parameter_details[$parameter_explode[1]]["type"] = $type;
+
           $parameter_jasper = '\$P{' . $parameter_explode[1] . '}';
           $query_split = preg_split('/' . $parameter_jasper . '/',$query);
           if(count($query_split)>1){
+            $parameter_details[$parameter_explode[1]]["type"] = $type;
             $table_col_name=explode(' ',$query_split[0]);
             $pos = count($table_col_name)-3;
             $parameter_details[$parameter_explode[1]]["tablecol"] = $table_col_name[$pos];
             $noparam = false;
-          }
-          else{
-            $parameter_details[$parameter_explode[1]]["tablecol"] = "";
-            $noparam = true;
           }
           unset($parameter_explode);
           $parameter_explode = array();
@@ -119,7 +117,8 @@ class DiscoveryController extends Controller
       }
       if(!$noparam)
         return View::make('discovery.fields',compact('file','parameter_details'));
-      else
+      else{
         return "NOFILTERS";
+      }
     }
   }
