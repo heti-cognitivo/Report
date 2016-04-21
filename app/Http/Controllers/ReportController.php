@@ -38,30 +38,31 @@ class ReportController extends Controller
       $data =  json_decode($request->filterdata,true);
       $parameters = array();
       $file = $data["file"];
-      \Session::regenerate(true);
-      \Session::put('empresa',trim($data["filters"]["empresa"]));
-      if(Session::has('empresa')){
-        $jasperPHP = new JasperPHP;
-        $jasper_params = $jasperPHP->list_parameters(
-        base_path() . '/app/Reports/' . $file . ".jasper"
-        )->execute();
+      $jasperPHP = new JasperPHP;
+      $jasper_params = $jasperPHP->list_parameters(
+      base_path() . '/app/Reports/' . $file . ".jasper"
+      )->execute();
+      if(count($data["filters"])){
         foreach ($jasper_params as $parameter_description) {
           $param = preg_split('/\s+/',$parameter_description)[1];
-          $parameters[$param] = "'" . $data["filters"][$param] . "'";
+          if(array_key_exists($param,$data["filters"]))
+            $parameters[$param] = "'" . $data["filters"][$param] . "'";
+          else
+            $parameters[$param] = "";
         }
-        $database = \Config::get('database.connections.mysql');
-        $output = base_path() . '/public/report/' . $file;
-        $ext = "html";
-        $jasperPHP->process(
-            base_path() . '/app/Reports/' . $file . ".jasper",
-            $output,
-            array($ext),
-            $parameters,
-            $database,
-            false,
-            false
-        )->execute();
-        return url() . "/report/" . $file . "." . $ext;
       }
+      $database = \Config::get('database.connections.mysql');
+      $output = base_path() . '/public/report/' . $file;
+      $ext = "html";
+      $jasperPHP->process(
+          base_path() . '/app/Reports/' . $file . ".jasper",
+          $output,
+          array($ext),
+          $parameters,
+          $database,
+          false,
+          false
+      )->execute();
+      return url() . "/report/" . $file . "." . $ext;
     }
 }

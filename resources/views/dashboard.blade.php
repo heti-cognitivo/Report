@@ -4,11 +4,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
-	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
+	<link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/flatpickr.min.css"> <!-- Resource style -->
   <link href="{{url()}}/assets/layouts/layout3/css/layout.min.css" rel="stylesheet" type="text/css" />
   <link href="{{url()}}/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
   <link href="{{url()}}/assets/layouts/layout3/css/themes/default.min.css" rel="stylesheet" type="text/css" id="style_color" />
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+  <script src="js/flatpickr.min.js"></script>
 
   <script src="auxiliar/js/jquery.min.2.1.3.js"></script>
   <script src="auxiliar/js/discovery.js"></script>

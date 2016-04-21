@@ -15,6 +15,14 @@
                   addtypeahead('{{$name}}');
                 });
                 </script>
+
+            @elseif($detail["type"] == "DATETIME")
+              <input class=calendar id="filter{{$name}}" type="text" size="10">
+                <script type="text/javascript">
+            $(function () {
+              flatpickr('.calendar');
+            });
+        </script>
             @endif
           </div>
         @endforeach
